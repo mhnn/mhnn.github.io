@@ -1,0 +1,75 @@
+# 指定标签的色彩
+tags:
+  动画: crimson
+  漫画: orange
+  Parcel: "#21374b"
+  学习: saddlebrown
+  MAD: crimson
+  教程: royalblue
+  笔记: dimgray
+  分享: "#0078e7"
+  随笔: mediumpurple
+  Blender: "#d04d2d"
+  Linux: "#2577b1"
+  中传: "#ccb44b"
+  部落: "#DD306A"
+  科幻: midnightblue
+  蚂蚁森林: "#54a892"
+# 指定分类的色彩
+categories:
+  笔记: dimgray
+# 社交图标
+social:
+- name: GitHub
+  link: https://github.com/mhnn
+  icon: icon-github-line
+  color: "#181717"
+# 首页
+#  标语动画
+banner:
+  enable: false
+  title: ""
+  src: ""
+  border: true
+  cloud:
+    enable: true
+    color: "white"
+  go_down:
+    enable: true
+    icon: icon-arrow-down-s-line
+# UI
+# 可选 light | dark | auto | time
+mode: time
+# 头像
+avatar:
+  enable: true
+  url: https://avatars.githubusercontent.com/u/27659003?s=400&u=4d819eaa50de6a292cf998fe753601b90119363c&v=4
+  rounded: true
+  opacity: 1
+  mickey_mouse: false
+  status:
+    enable: false
+    emoji: 😭
+    message: 不想上学
+# 打赏
+reward:
+  enable: true
+# 运行时间
+footer:
+  live_time:
+    enable: false
+    prefix: 本博客已萌萌哒地运行
+    suffix: (●'◡'●)
+    start_time: "2019-04-12T00:00:00"
+mourn:
+  enable: true
+  days:
+    - "4-4"
+    - "5-12"
+#点击页面的烟花效果
+fireworks:
+  enable: false
+  colors:
+    - "102, 167, 221"
+    - "62, 131, 225"
+    - "33, 78, 194"
