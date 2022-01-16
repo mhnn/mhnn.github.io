@@ -27,9 +27,9 @@ social:
 # 首页
 #  标语动画
 banner:
-  enable: false
-  title: ""
-  src: ""
+  enable: true
+  title: "晚安"
+  src: /js/ui/banner.js
   border: true
   cloud:
     enable: true
@@ -53,7 +53,7 @@ avatar:
     message: 不想上学
 # 打赏
 reward:
-  enable: true
+  enable: false
 # 运行时间
 footer:
   live_time:
@@ -73,3 +73,19 @@ fireworks:
     - "102, 167, 221"
     - "62, 131, 225"
     - "33, 78, 194"
+# 版权
+creative_commons:
+  license: by-nc-sa
+  post: false
+  language: deed.zh
+  clipboard: false
+# 第三方只支持-评论，暂时不开
+comment:
+  enable: false
+  tips:
+    - 若您想及时得到回复提醒，建议跳转 GitHub Issues 评论。
+    - 若没有本文 Issue，您可以使用 Comment 模版新建。
+  candidates:
+    - valine
+    - utterances
+# 本地搜索（待添加）
