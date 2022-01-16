@@ -306,9 +306,103 @@ export default {
 **provide：**一个对象，或是一个返回对象的函数。包含可注入其子孙的property，即要传递给子孙的属性和属性值。
 **inject：**一个字符串数组，或者是一个对象。当其为字符串数组时，使用方式和props十分相似，只不过接收的属性由data变成了provide中的属性。当其为对象时，也和props类似，可以通过配置default和from等属性来设置默认值，在子组件中使用新的命名属性等。
 **实例**
-待续。。。
+此实例中有三个组件的关系和上一个例子相同。此例实现了：
+- 父向子传值：A通过provide将message注入给子孙组件，B通过`inject:['messageFromA']`来接收A中的message，并通过`messageFromA.content`获取A的message的content值
+- 跨级向下传值：A通过provide将message注入给子孙组件，C通过`inject:['messageFromA']`直接接收A的message即可
+**组件A代码**
+```html
+// 1级组件A
+<template>
+  <div class="compa">
+    <h3>this is A component</h3>
+    <input type="text" v-model="message.content" />
+    <CompB />
+  </div>
+</template>
+<script>
+import CompB from './compB'
+export default {
+  name: 'CompA',
+  provide() {
+    return {
+      messageFromA: this.message,  // 将message通过provide传递给子孙组件
+    }
+  },
+  data() {
+    return {
+      message: {
+        content: '',
+      },
+    }
+  },
+  components: {
+    CompB,
+  },
+}
+</script>
+```
+**组件B代码**
+```html
+// 2级组件B
+<template>
+  <div class="compb">
+    <h4>this is B component</h4>
+    <p>收到来自A组件的消息：{{ messageFromA && messageFromA.content }}</p>
+    <CompC />
+  </div>
+</template>
+<script>
+import CompC from './compC'
+export default {
+  name: 'CompB',
+  inject: ['messageFromA'], // 通过inject接受A中provide传递过来的message
+  components: {
+    CompC,
+  },
+}
+</script>
+```
+**组件C代码**
+```html
+// 3级组件C
+<template>
+  <div class="compc">
+    <h5>this is C component</h5>
+    <p>收到来自A组件的消息：{{ messageFromA && messageFromA.content }}</p>
+  </div>
+</template>
+<script>
+export default {
+  name: 'Compc',
+  inject: ['messageFromA'], // 通过inject接受A中provide传递过来的message
+}
+</script>
+```
+<div class="warning">
+
+> 注意：
+> 1. message使用object而不是string，是因为provide与inject并不是可响应的
+> 2. inject遵循就近原则，即如果上例中B也通过provide向C传入messageFromA的值，则C会优先接收B的
+
+</div>
+
+![](./provideAndinject.webp)
 ## eventBus
-待续。。。
+> eventBus又称事件总线。通过注册一个新的Vue实例，通过调用这个实例的\$emit和\$on等来监听和触发这个实例的事件，通过传入参数来实现事件的全局通信。它是一个不具备 DOM 的组件，有的仅仅只是它实例方法而已，因此非常的轻便。
+我们可以通过在全局Vue实例上注册:
+```js
+// main.js
+Vue.prototype.$Bus = new Vue()
+```
+但是当项目过大时，我们最好将事件总线抽象为单个文件,将其导入到需要使用的每个组件文件中。这样,它不会污染全局命名空间：
+```js
+//bus.js，使用时通过import引入
+import Vue from 'vue'
+export const Bus = new Vue()
+```
+**原理分析**
+eventBus使用的是订阅-发布模式：
+
 ## Vuex
 待续。。。
 ## 总结
