@@ -2,19 +2,11 @@
 tags:
   动画: crimson
   漫画: orange
-  Parcel: "#21374b"
   学习: saddlebrown
-  MAD: crimson
-  教程: royalblue
   笔记: dimgray
   分享: "#0078e7"
   随笔: mediumpurple
-  Blender: "#d04d2d"
   Linux: "#2577b1"
-  中传: "#ccb44b"
-  部落: "#DD306A"
-  科幻: midnightblue
-  蚂蚁森林: "#54a892"
 # 指定分类的色彩
 categories:
   笔记: dimgray
