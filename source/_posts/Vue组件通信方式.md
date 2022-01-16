@@ -14,11 +14,10 @@ tags:
 **props:** 可以是数组或者对象，用于接收父组件传递而来的属性；当props为对象时，可以通过type、default、required、validator等配置来设置属性的类型、默认值、是否必传和校验规则。
 **$emit:** 用于触发父组件在子组件上绑定了v-on事件相应的监听。
 **实例**
-* 父向子传值：父组件通过`:messageFromParent="message"`将父组件message值传递给子组件，当父组件的input标签输入时，子组件p标签的内容就会改变。
-* 子向父传值：父组件通过`@on-receive="receive"`在子组件上绑定了receive事件的监听，子组件input标签输入时，会触发receive回调函数，通过`this.$emit('on-receive',this.message)`将子组件message的值赋给父组件messageFromChild，改变父组件p标签的内容。
-
-```vue
-//子组件代码
+- 父向子传值：父组件通过`:messageFromParent="message"`将父组件message值传递给子组件，当父组件的input标签输入时，子组件p标签的内容就会改变。
+- 子向父传值：父组件通过`@on-receive="receive"`在子组件上绑定了receive事件的监听，子组件input标签输入时，会触发receive回调函数，通过`this.$emit('on-receive',this.message)`将子组件message的值赋给父组件messageFromChild，改变父组件p标签的内容。
+**子组件代码**
+```html
 <template>
   <div>
     <div class="child">
@@ -48,8 +47,8 @@ export default {
 };
 </script>
 ```
-```vue
-// 父组件代码
+**父组件代码**
+```html
 <template>
   <div class="parent">
     <h3>this is parent component</h3>
@@ -85,9 +84,9 @@ export default {
 > v-slot是Vue2.6新增的用于统一实现插槽和具名插槽的Api，用于替代`slot`、`slot-scope`、`scope`等api。
 > v-slot在template标签中用于提供具名插槽或需要接收prop的插槽，如果不指定v-slot，则取默认值default
 **实例**
-* 父向子传值：父组件通过`<template v-slot="child">{{ message }}</template>`将父组件的message传递给子组件，子组件使用`<slot name="child"></slot>`接收到相应内容。
-```vue
-//子组件
+- 父向子传值：父组件通过`<template v-slot="child">{{ message }}</template>`将父组件的message传递给子组件，子组件使用`<slot name="child"></slot>`接收到相应内容。
+**子组件**
+```html
 <template>
   <div class="child">
     <h4>this is child component</h4>
@@ -99,8 +98,8 @@ export default {
   </div>
 </template>
 ```
-```vue
-//父组件
+**父组件**
+```html
 <template>
   <div class="parent">
     <h3>this is parent component</h3>
@@ -138,10 +137,10 @@ export default {
 **$root：**获取当前组件树的根Vue实例。若当前实例没有父实例，此实例将会是其自己。通过这个，我们可以实现组件之间的跨级通信。
 **实例：**
 `$parent`与`$children`
-* 父向子传值：子组件通过`$parent.message`获取到父组件中message的值。
-* 子向父传值：父组件通过`$children`获取子组件实例的数组，通过遍历找到name=Child1的子组件实例并将其赋值给child1，而后使用`child1.message`获取到child1子组件的message
-```vue
-//子组件
+- 父向子传值：子组件通过`$parent.message`获取到父组件中message的值。
+- 子向父传值：父组件通过`$children`获取子组件实例的数组，通过遍历找到name=Child1的子组件实例并将其赋值给child1，而后使用`child1.message`获取到child1子组件的message
+**子组件**
+```html
 <template>
   <div class="child">
     <h4>this is child component</h4>
@@ -161,8 +160,8 @@ export default {
 };
 </script>
 ```
-```vue
-//父组件
+**父组件**
+```html
 <template>
   <div class="parent">
     <h3>this is parent component</h3>
@@ -203,14 +202,20 @@ export default {
 **\$listeners：**包含了父作用域中的 v-on 事件监听器。它可以通过`v-on="$listeners" `传入内部组件——在创建更高层次的组件时非常有用，这里在传递时的使用方法和 $attrs 十分类似。
 **实例**
 在这个实例中，有三个组件：A、B、C。他们的关系是：
-`{ A: { B: { C } } }`
+```js
+A:{
+  B:{
+    C
+  }
+}
+```
 即A是B的父组件，B是C的父组件，C是最后一级（3级组件）。我们实现了：
-* 父向子传值：A通过`:messageFromA="message"`将message属性传递给B，B通过`$attrs.messageFromA`获取到A的message。
-* 跨级向下传值：A通过`:messageFromA="message"`将message传给B，B通过`v-bind="$attrs"`将其传给C，C通过`$attrs.messageFromA`获取到A的message值。
-* 子向父传值：A通过`@keyup="receive"`在子孙组件上绑定keyup事件的监听，B通过`v-on="$listeners"`来将keyup事件绑定在其input标签上。当B的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父传值。
-* 跨级向上传值：A通过`@keyup="receive"`在子孙组件上绑定keyup事件的监听，B通过`<CompC v-on="$listeners" />`将其继续传递给C。C通过`v-on="$listeners"`来将keyup事件绑定在其input标签上。当C的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父跨级传值。
-```vue
-//三级组件-C
+- 父向子传值：A通过`:messageFromA="message"`将message属性传递给B，B通过`$attrs.messageFromA`获取到A的message。
+- 跨级向下传值：A通过`:messageFromA="message"`将message传给B，B通过`v-bind="$attrs"`将其传给C，C通过`$attrs.messageFromA`获取到A的message值。
+- 子向父传值：A通过`@keyup="receive"`在子孙组件上绑定keyup事件的监听，B通过`v-on="$listeners"`来将keyup事件绑定在其input标签上。当B的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父传值。
+- 跨级向上传值：A通过`@keyup="receive"`在子孙组件上绑定keyup事件的监听，B通过`<CompC v-on="$listeners" />`将其继续传递给C。C通过`v-on="$listeners"`来将keyup事件绑定在其input标签上。当C的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父跨级传值。
+**三级组件-C**
+```html
 <template>
   <div class="C">
     <h5>this is C component</h5>
@@ -230,8 +235,8 @@ export default {
 };
 </script>
 ```
-```vue
-//二级组件-B
+**二级组件-B**
+```html
 <template>
   <div class="B">
     <h4>this is B component</h4>
@@ -258,8 +263,8 @@ export default {
 };
 </script>
 ```
-```vue
-// A组件
+**A组件**
+```html
 <template>
   <div class="A">
     <h3>this is A component</h3>
