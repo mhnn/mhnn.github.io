@@ -1,0 +1,307 @@
+<!DOCTYPE html><html lang="zh-CN"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0"><meta name="theme-color" content="#0078E7"><meta name="author" content="南山有榛"><meta name="copyright" content="南山有榛"><meta name="generator" content="Hexo 6.0.0"><meta name="theme" content="hexo-theme-yun"><title>Vue组件通信方式 | 南山有榛的个人博客</title><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@900&amp;display=swap" media="print" onload="this.media='all'"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/star-markdown-css@0.2.2/dist/yun/yun-markdown.min.css"><script src="//at.alicdn.com/t/font_1140697_dxory92pb0h.js" async></script><script src="https://cdn.jsdelivr.net/npm/scrollreveal/dist/scrollreveal.min.js" defer></script><script>function initScrollReveal() {
+  [".post-card",".post-content img"].forEach((target)=> {
+    ScrollReveal().reveal(target);
+  })
+}
+document.addEventListener("DOMContentLoaded", initScrollReveal);
+document.addEventListener("pjax:success", initScrollReveal);
+</script><link rel="icon" type="image/svg+xml" href="/yun.svg"><link rel="mask-icon" href="/yun.svg" color="#0078E7"><link rel="preload" href="/css/hexo-theme-yun.css" as="style"><link rel="preload" href="/js/utils.js" as="script"><link rel="preload" href="/js/hexo-theme-yun.js" as="script"><link rel="prefetch" href="/js/sidebar.js" as="script"><link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin><script id="yun-config">
+    const Yun = window.Yun || {};
+    window.CONFIG = {"hostname":"mhnn.github.io","root":"/","title":"晚安","version":"1.7.0","mode":"time","copycode":true,"page":{"isPost":true},"i18n":{"placeholder":"搜索...","empty":"找不到您查询的内容: ${query}","hits":"找到 ${hits} 条结果","hits_time":"找到 ${hits} 条结果（用时 ${time} 毫秒）"},"anonymous_image":"https://cdn.jsdelivr.net/gh/YunYouJun/cdn/img/avatar/none.jpg","say":{"api":"https://v1.hitokoto.cn","hitokoto":true}};
+  </script><link rel="stylesheet" href="/css/hexo-theme-yun.css"><script src="/js/utils.js"></script><script src="/js/hexo-theme-yun.js"></script><meta name="description" content="对Vue组件通信方式进行的一个总结。摘录自微信公众号web前端知识点">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue组件通信方式">
+<meta property="og:url" content="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/index.html">
+<meta property="og:site_name" content="南山有榛的个人博客">
+<meta property="og:description" content="对Vue组件通信方式进行的一个总结。摘录自微信公众号web前端知识点">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BC%A0%E9%80%92.webp">
+<meta property="og:image" content="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/$child%E4%B8%8E$parent.webp">
+<meta property="og:image" content="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/%E8%B7%A8%E7%BA%A7%E4%BC%A0%E9%80%92.webp">
+<meta property="article:published_time" content="2022-01-16T00:28:04.000Z">
+<meta property="article:modified_time" content="2022-01-16T07:25:48.004Z">
+<meta property="article:author" content="南山有榛">
+<meta property="article:tag" content="学习">
+<meta property="article:tag" content="Vue">
+<meta property="article:tag" content="前端">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BC%A0%E9%80%92.webp"><script src="/js/ui/mode.js"></script></head><body><div class="container"><a class="sidebar-toggle hty-icon-button" id="menu-btn"><div class="hamburger hamburger--spin" type="button"><span class="hamburger-box"><span class="hamburger-inner"></span></span></div></a><div class="sidebar-toggle sidebar-overlay"></div><aside class="sidebar"><script src="/js/sidebar.js"></script><ul class="sidebar-nav"><li class="sidebar-nav-item sidebar-nav-toc hty-icon-button sidebar-nav-active" data-target="post-toc-wrap" title="文章目录"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-list-ordered"></use></svg></li><li class="sidebar-nav-item sidebar-nav-overview hty-icon-button" data-target="site-overview-wrap" title="站点概览"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-passport-line"></use></svg></li></ul><div class="sidebar-panel" id="site-overview-wrap"><div class="site-info fix-top"><a class="site-author-avatar" href="/about/" title="南山有榛"><img width="96" loading="lazy" src="https://avatars.githubusercontent.com/u/27659003?s=400&amp;u=4d819eaa50de6a292cf998fe753601b90119363c&amp;v=4" alt="南山有榛"></a><div class="site-author-name"><a href="/about/">南山有榛</a></div><a class="site-name" href="/about/site.html">南山有榛的个人博客</a><sub class="site-subtitle"></sub><div class="site-desciption"></div></div><nav class="site-state"><a class="site-state-item hty-icon-button icon-home" href="/" title="首页"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-home-4-line"></use></svg></span></a><div class="site-state-item"><a href="/archives/" title="归档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-archive-line"></use></svg></span><span class="site-state-item-count">3</span></a></div><div class="site-state-item"><a href="/categories/" title="分类"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-2-line"></use></svg></span><span class="site-state-item-count">2</span></a></div><div class="site-state-item"><a href="/tags/" title="标签"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="site-state-item-count">5</span></a></div><a class="site-state-item hty-icon-button" target="_blank" rel="noopener" href="https://yun.yunyoujun.cn" title="文档"><span class="site-state-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-settings-line"></use></svg></span></a></nav><hr style="margin-bottom:0.5rem"><div class="links-of-author"><a class="links-of-author-item hty-icon-button" rel="noopener" href="https://github.com/mhnn" title="GitHub" target="_blank" style="color:#181717"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-github-line"></use></svg></a></div><hr style="margin:0.5rem 1rem"><div class="links"><a class="links-item hty-icon-button" href="/links/" title="我的小伙伴们" style="color:dodgerblue"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-genderless-line"></use></svg></a></div><br><a class="links-item hty-icon-button" id="toggle-mode-btn" href="javascript:;" title="Mode" style="color: #f1cb64"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-contrast-2-line"></use></svg></a></div><div class="sidebar-panel sidebar-panel-active" id="post-toc-wrap"><div class="post-toc"><div class="post-toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#props-emit"><span class="toc-number">1.</span> <span class="toc-text">props&#x2F;$emit</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#v-slot"><span class="toc-number">2.</span> <span class="toc-text">v-slot</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link"><span class="toc-number">2.1.</span> <span class="toc-text">this is parent component</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#attrs-listener"><span class="toc-number">3.</span> <span class="toc-text">$attrs&#x2F;$listener</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link"><span class="toc-number">3.0.0.1.</span> <span class="toc-text">this is C component</span></a></li></ol></li></ol></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#provide-inject"><span class="toc-number">4.</span> <span class="toc-text">provide&#x2F;inject</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#eventBus"><span class="toc-number">5.</span> <span class="toc-text">eventBus</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#Vuex"><span class="toc-number">6.</span> <span class="toc-text">Vuex</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E6%80%BB%E7%BB%93"><span class="toc-number">7.</span> <span class="toc-text">总结</span></a></li></ol></div></div></div></aside><main class="sidebar-translate" id="content"><div id="post"><article class="hty-card post-block" itemscope itemtype="https://schema.org/Article"><link itemprop="mainEntityOfPage" href="https://mhnn.github.io/Vue%E7%BB%84%E4%BB%B6%E9%80%9A%E4%BF%A1%E6%96%B9%E5%BC%8F/"><span hidden itemprop="author" itemscope itemtype="https://schema.org/Person"><meta itemprop="name" content="南山有榛"><meta itemprop="description"></span><span hidden itemprop="publisher" itemscope itemtype="https://schema.org/Organization"><meta itemprop="name" content="南山有榛的个人博客"></span><header class="post-header"><h1 class="post-title" itemprop="name headline">Vue组件通信方式</h1><div class="post-meta"><div class="post-time" style="display:inline-block"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-calendar-line"></use></svg></span> <time title="创建时间：2022-01-16 08:28:04" itemprop="dateCreated datePublished" datetime="2022-01-16T08:28:04+08:00">2022-01-16</time></div><div class="post-classify"><span class="post-category"> <span class="post-meta-item-icon" style="margin-right:3px;"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-folder-line"></use></svg></span><span itemprop="about" itemscope itemtype="https://schema.org/Thing"><a class="category-item" href="/categories/Vue/" style="--text-color:var(--hty-text-color)" itemprop="url" rel="index"><span itemprop="text">Vue</span></a></span></span><span class="post-tag"><span class="post-meta-divider">-</span><a class="tag-item" href="/tags/%E5%AD%A6%E4%B9%A0/" style="--text-color:saddlebrown"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">学习</span></a><a class="tag-item" href="/tags/Vue/" style="--text-color:#4fc08d"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">Vue</span></a><a class="tag-item" href="/tags/%E5%89%8D%E7%AB%AF/" style="--text-color:var(--hty-text-color)"><span class="post-meta-item-icon"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-price-tag-3-line"></use></svg></span><span class="tag-name">前端</span></a></span></div></div></header><section class="post-body" itemprop="articleBody"><div class="post-content markdown-body" style="--smc-primary:#0078E7;"><p>对Vue组件通信方式进行的一个总结。摘录自微信公众号<code>web前端知识点</code></p>
+<span id="more"></span>
+<h2 id="props-emit"><a href="#props-emit" class="headerlink" title="props/$emit"></a>props/$emit</h2><p><strong>props:</strong> 可以是数组或者对象，用于接收父组件传递而来的属性；当props为对象时，可以通过type、default、required、validator等配置来设置属性的类型、默认值、是否必传和校验规则。<br><strong>$emit:</strong> 用于触发父组件在子组件上绑定了v-on事件相应的监听。<br><strong>实例</strong></p>
+<ul>
+<li>父向子传值：父组件通过<code>:messageFromParent=&quot;message&quot;</code>将父组件message值传递给子组件，当父组件的input标签输入时，子组件p标签的内容就会改变。</li>
+<li>子向父传值：父组件通过<code>@on-receive=&quot;receive&quot;</code>在子组件上绑定了receive事件的监听，子组件input标签输入时，会触发receive回调函数，通过<code>this.$emit(&#39;on-receive&#39;,this.message)</code>将子组件message的值赋给父组件messageFromChild，改变父组件p标签的内容。</li>
+</ul>
+<pre><code class="vue">//子组件代码
+&lt;template&gt;
+  &lt;div&gt;
+    &lt;div class=&quot;child&quot;&gt;
+      &lt;h4&gt;this is child component&lt;/h4&gt;
+      &lt;input type=&quot;text&quot; v-model=&quot;message&quot; @keyup=&quot;send&quot; /&gt;
+      &lt;p&gt;收到来自父组件的消息：&#123;&#123; messageFromParent &#125;&#125;&lt;/p&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+export default &#123;
+  name: &quot;child&quot;,
+  //通过props向父组件暴露属性
+  props: [&quot;messageFromParent&quot;],
+  data() &#123;
+    return &#123;
+      message: &quot;&quot;,
+    &#125;;
+  &#125;,
+  methods: &#123;
+    send() &#123;
+      //通过$emit触发on-receive事件，调用父组件中的
+      //receive回调，并将this.message作为参数
+      this.$emit(&quot;on-receive&quot;, this.message);
+    &#125;,
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<pre><code class="vue">// 父组件代码
+&lt;template&gt;
+  &lt;div class=&quot;parent&quot;&gt;
+    &lt;h3&gt;this is parent component&lt;/h3&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;message&quot; /&gt;
+    &lt;p&gt;收到来自子组件的消息：&#123;&#123; messageFromChild &#125;&#125;&lt;/p&gt;
+    &lt;Child :messageFromParent=&quot;message&quot; @on-receive=&quot;receive&quot; /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+&lt;script&gt;
+import Child from &quot;./child&quot;;
+export default &#123;
+  data() &#123;
+    return &#123;
+      //传递给子组件的消息
+      message: &quot;&quot;,
+      messageFromChild: &quot;&quot;,
+    &#125;;
+  &#125;,
+  components: &#123;
+    Child,
+  &#125;,
+  methods: &#123;
+    //接受子组件的信息，并将其赋值给messageFromChild
+    receive(msg) &#123;
+      this.messageFromChild = msg;
+    &#125;,
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<p><img src="./%E7%88%B6%E5%AD%90%E7%BB%84%E4%BB%B6%E4%BC%A0%E9%80%92.webp" alt="父子组件传递" loading="lazy"></p>
+<h2 id="v-slot"><a href="#v-slot" class="headerlink" title="v-slot"></a>v-slot</h2><blockquote>
+<p>v-slot是Vue2.6新增的用于统一实现插槽和具名插槽的Api，用于替代<code>slot</code>、<code>slot-scope</code>、<code>scope</code>等api。<br>v-slot在template标签中用于提供具名插槽或需要接收prop的插槽，如果不指定v-slot，则取默认值default<br><strong>实例</strong></p>
+</blockquote>
+<ul>
+<li>父向子传值：父组件通过<code>&lt;template v-slot=&quot;child&quot;&gt;&#123;&#123; message &#125;&#125;&lt;/template&gt;</code>将父组件的message传递给子组件，子组件使用<code>&lt;slot name=&quot;child&quot;&gt;&lt;/slot&gt;</code>接收到相应内容。<pre><code class="vue">//子组件
+&lt;template&gt;
+&lt;div class=&quot;child&quot;&gt;
+  &lt;h4&gt;this is child component&lt;/h4&gt;
+  &lt;p&gt;
+    收到来自父组件的消息：
+    &lt;!-- 展示父组件通过插槽传递的&#123;&#123; message &#125;&#125; --&gt;
+    &lt;slot name=&quot;child&quot;&gt;&lt;/slot&gt;
+  &lt;/p&gt;
+&lt;/div&gt;
+&lt;/template&gt;
+</code></pre>
+```vue<br>//父组件<template>
+<div class="parent">
+  <h3>this is parent component</h3>
+  <input type="text" v-model="message" />
+  <Child>
+    <template v-slot:child>
+      <!-- 插槽要展示的内容 -->
+      
+    </template>
+  </Child>
+</div>
+</template></li>
+</ul>
+<script>
+import Child from "./slot-child";
+export default {
+  name: "Parent",
+  data() {
+    return {
+      message: "",
+    };
+  },
+  components: {
+    Child,
+  },
+};
+</script>
+<pre><code>![v-slot应用](./v-slot应用.webp)
+## \$refs/\$parent/\$children/\$root
+&gt; 我们也同样可以通过 `$refs/$parent/$children/$root` 等方式获取 Vue 组件实例，得到实例上绑定的属性及方法等，来实现组件之间的通信。
+**$refs：**我们通常会将 $refs绑定在DOM元素上，来获取DOM元素的 attributes。在实现组件通信上，我们也可以将 $refs 绑定在子组件上，从而获取子组件实例。
+**$parent:**我们可以在Vue中通过`this.\$parent`来获取当前组件的父组件实例（若有）。
+**$children：**与parent同理。但需注意的是，`this.\$children`数组中的元素下标不一定就与父组件引用子组件的顺序一一对应，异步加载可能会影响其顺序，故使用时一定要根据一定条件（如name）去找相应组件。
+**$root：**获取当前组件树的根Vue实例。若当前实例没有父实例，此实例将会是其自己。通过这个，我们可以实现组件之间的跨级通信。
+**实例：**
+`$parent`与`$children`
+* 父向子传值：子组件通过`$parent.message`获取到父组件中message的值。
+* 子向父传值：父组件通过`$children`获取子组件实例的数组，通过遍历找到name=Child1的子组件实例并将其赋值给child1，而后使用`child1.message`获取到child1子组件的message
+```vue
+//子组件
+&lt;template&gt;
+  &lt;div class=&quot;child&quot;&gt;
+    &lt;h4&gt;this is child component&lt;/h4&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;message&quot; /&gt;
+    &lt;p&gt;来自于父组件的消息：&#123;&#123; $parent.message &#125;&#125;&lt;/p&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+export default &#123;
+  name: &quot;Child1&quot;,
+  data() &#123;
+    return &#123;
+      message: &quot;&quot;,
+    &#125;;
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<pre><code class="vue">//父组件
+&lt;template&gt;
+  &lt;div class=&quot;parent&quot;&gt;
+    &lt;h3&gt;this is parent component&lt;/h3&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;message&quot; /&gt;
+    &lt;p&gt;来自子组件的消息：&#123;&#123; child1.message &#125;&#125;&lt;/p&gt;
+    &lt;Child /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import Child from &quot;@/pages/test/$child&quot;;
+export default &#123;
+  data() &#123;
+    return &#123;
+      message: &quot;&quot;,
+      child1: &#123;&#125;,
+    &#125;;
+  &#125;,
+  components: &#123;
+    Child,
+  &#125;,
+  mounted() &#123;
+    this.child1 = this.$children.find((child) =&gt; &#123;
+      //$options用于获取自定义属性，此处的name即为自定义属性
+      return child.$options.name == &quot;Child1&quot;;
+    &#125;);
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<p><img src="./$child%E4%B8%8E$parent.webp" alt="$children与$parent" loading="lazy"></p>
+<h2 id="attrs-listener"><a href="#attrs-listener" class="headerlink" title="$attrs/$listener"></a>$attrs/$listener</h2><blockquote>
+<p>属于Vue2.4新加入的属性。主要用来开发高级组件的。<br><strong>$attrs：</strong>用来接收父作用域中不作为props被识别的attribute属性，并可以通过<code>v-bind=&quot;$attrs&quot;</code>传入内部组件。<br>试想一下，当你创建了一个组件，你要接收 param1 、param2、param3 …… 等数十个参数，如果通过 props，那你需要通过props:<br>[‘param1’, ‘param2’, ‘param3’, ……]等声明一大堆。如果这些 props 还有一些需要往更深层次的子组件传递，那将会更加麻烦。<br>而使用 $attrs ，你不需要任何声明，直接通过$attrs.param1、$attrs.param2……就可以使用，而且向深层子组件传递上面也给了示例，十分方便。<br><strong>$listeners：</strong>包含了父作用域中的 v-on 事件监听器。它可以通过<code>v-on=&quot;$listeners&quot; </code>传入内部组件——在创建更高层次的组件时非常有用，这里在传递时的使用方法和 $attrs 十分类似。<br><strong>实例</strong><br>在这个实例中，有三个组件：A、B、C。他们的关系是：<br><code>&#123; A: &#123; B: &#123; C &#125; &#125; &#125;</code><br>即A是B的父组件，B是C的父组件，C是最后一级（3级组件）。我们实现了：</p>
+</blockquote>
+<ul>
+<li>父向子传值：A通过<code>:messageFromA=&quot;message&quot;</code>将message属性传递给B，B通过<code>$attrs.messageFromA</code>获取到A的message。</li>
+<li>跨级向下传值：A通过<code>:messageFromA=&quot;message&quot;</code>将message传给B，B通过<code>v-bind=&quot;$attrs&quot;</code>将其传给C，C通过<code>$attrs.messageFromA</code>获取到A的message值。</li>
+<li>子向父传值：A通过<code>@keyup=&quot;receive&quot;</code>在子孙组件上绑定keyup事件的监听，B通过<code>v-on=&quot;$listeners&quot;</code>来将keyup事件绑定在其input标签上。当B的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父传值。</li>
+<li>跨级向上传值：A通过<code>@keyup=&quot;receive&quot;</code>在子孙组件上绑定keyup事件的监听，B通过<code>&lt;CompC v-on=&quot;$listeners&quot; /&gt;</code>将其继续传递给C。C通过<code>v-on=&quot;$listeners&quot;</code>来将keyup事件绑定在其input标签上。当C的input输入内容时，便会触发A的receive回调——将B的input框内的值赋值给A的messageFromComp ，从而展示了子向父跨级传值。<br>```vue<br>//三级组件-C<template>
+<div class="C">
+  <h5>this is C component</h5>
+  <input type="text" name="compC" id="" v-model="message" v-on="$listeners" />
+  <p>收到来自A的消息：</p>
+</div>
+</template></li>
+</ul>
+<script>
+export default {
+  name: "Compc",
+  data() {
+    return {
+      message: "",
+    };
+  },
+};
+</script>
+<pre><code>```vue
+//二级组件-B
+&lt;template&gt;
+  &lt;div class=&quot;B&quot;&gt;
+    &lt;h4&gt;this is B component&lt;/h4&gt;
+    &lt;!--将A组件keyup的监听回调绑在该input上--&gt;
+    &lt;input type=&quot;text&quot; name=&quot;compB&quot; v-model=&quot;message&quot; v-on=&quot;$listeners&quot; /&gt;
+    &lt;p&gt;收到来自A组件的消息：&#123;&#123; $attrs.messageFromA &#125;&#125;&lt;/p&gt;
+    &lt;!--将A组件keyup的监听回调继续传递给C组件，将A组件传递的attrs继续传递给C组件--&gt;
+    &lt;CompC v-bind=&quot;$attrs&quot; v-on=&quot;$listeners&quot; /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import CompC from &quot;./C&quot;;
+export default &#123;
+  name: &quot;CompB&quot;,
+  components: &#123;
+    CompC,
+  &#125;,
+  data() &#123;
+    return &#123;
+      message: &quot;&quot;,
+    &#125;;
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<pre><code class="vue">// A组件
+&lt;template&gt;
+  &lt;div class=&quot;A&quot;&gt;
+    &lt;h3&gt;this is A component&lt;/h3&gt;
+    &lt;input type=&quot;text&quot; v-model=&quot;message&quot; /&gt;
+    &lt;p&gt;收到来自&#123;&#123; comp &#125;&#125;的消息：&#123;&#123; messageFromComp &#125;&#125;&lt;/p&gt;
+    &lt;!--监听子孙组件的keyup事件，将message传递给子孙组件--&gt;
+    &lt;CompB :messageFromA=&quot;message&quot; @keyup=&quot;receive&quot; /&gt;
+  &lt;/div&gt;
+&lt;/template&gt;
+
+&lt;script&gt;
+import CompB from &quot;./B&quot;;
+export default &#123;
+  name: &quot;CompA&quot;,
+  data() &#123;
+    return &#123;
+      message: &quot;&quot;,
+      messageFromComp: &quot;&quot;,
+      comp: &quot;&quot;,
+    &#125;;
+  &#125;,
+  components: &#123;
+    CompB,
+  &#125;,
+  methods: &#123;
+    // 监听子孙组件keyup事件的回调，并将keyup所在input输入框的值赋值给messageFromComp
+    receive(e) &#123;
+      this.comp = e.target.name;
+      this.messageFromComp = e.target.value;
+    &#125;,
+  &#125;,
+&#125;;
+&lt;/script&gt;
+</code></pre>
+<p><img src="./%E8%B7%A8%E7%BA%A7%E4%BC%A0%E9%80%92.webp" loading="lazy"></p>
+<h2 id="provide-inject"><a href="#provide-inject" class="headerlink" title="provide/inject"></a>provide/inject</h2><blockquote>
+<p>这对选项需要一起使用，以允许一个祖先组件向其所有子孙后代注入一个依赖，不论层次有多深。并在其上下游关系成立的时间内始终生效。<br>这个类似于React的Context Api<br><strong>provide：</strong>一个对象，或是一个返回对象的函数。包含可注入其子孙的property，即要传递给子孙的属性和属性值。<br><strong>inject：</strong>一个字符串数组，或者是一个对象。当其为字符串数组时，使用方式和props十分相似，只不过接收的属性由data变成了provide中的属性。当其为对象时，也和props类似，可以通过配置default和from等属性来设置默认值，在子组件中使用新的命名属性等。<br><strong>实例</strong><br>待续。。。</p>
+</blockquote>
+<h2 id="eventBus"><a href="#eventBus" class="headerlink" title="eventBus"></a>eventBus</h2><p>待续。。。</p>
+<h2 id="Vuex"><a href="#Vuex" class="headerlink" title="Vuex"></a>Vuex</h2><p>待续。。。</p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>待续。。。</p>
+</div></section></article><div class="post-nav"><div class="post-nav-item"></div><div class="post-nav-item"><a class="post-nav-next" href="/hello-world/" rel="next" title="Hello World"><span class="post-nav-text">Hello World</span><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-right-s-line"></use></svg></a></div></div></div></main><footer class="sidebar-translate" id="footer"><div class="copyright"><span>&copy; 2019 – 2022 </span><span class="with-love" id="animate"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-cloud-line"></use></svg></span><span class="author"> 南山有榛</span></div><div class="powered"><span>由 <a href="https://hexo.io" target="_blank" rel="noopener">Hexo</a> 驱动 v6.0.0</span><span class="footer-separator">|</span><span>主题 - <a rel="noopener" href="https://github.com/YunYouJun/hexo-theme-yun" target="_blank"><span>Yun</span></a> v1.7.0</span></div></footer><a class="hty-icon-button" id="back-to-top" aria-label="back-to-top" href="#"><svg class="icon" aria-hidden="true"><use xlink:href="#icon-arrow-up-s-line"></use></svg><svg class="progress-circle-container" viewBox="0 0 100 100"><circle class="progress-circle" id="progressCircle" cx="50" cy="50" r="48" fill="none" stroke="#0078E7" stroke-width="2" stroke-linecap="round"></circle></svg></a><script>function initMourn() {
+  const date = new Date();
+  const today = (date.getMonth() + 1) + "-" + date.getDate()
+  const mourn_days = ["4-4","5-12"]
+  if (mourn_days.includes(today)) {
+    document.documentElement.style.filter = "grayscale(1)";
+  }
+}
+initMourn();</script></div></body></html>
